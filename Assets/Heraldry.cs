@@ -5,6 +5,7 @@ using System.Linq;
 using UnityEngine;
 using KModkit;
 using rnd = UnityEngine.Random;
+using System.Text.RegularExpressions;
 
 public class Heraldry : MonoBehaviour 
 {
@@ -449,4 +450,80 @@ public class Heraldry : MonoBehaviour
 
 		animating -= direction;
 	}
+
+    //twitch plays
+    private bool cmdIsValid(string cmd)
+    {
+        char[] valids = { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+        if ((cmd.Length >= 1) && (cmd.Length <= 2))
+        {
+            foreach (char c in cmd)
+            {
+                if (!valids.Contains(c))
+                {
+                    return false;
+                }
+            }
+            int temp = 0;
+            int.TryParse(cmd, out temp);
+            if (temp < 1 || temp > 48)
+            {
+                return false;
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    #pragma warning disable 414
+    private readonly string TwitchHelpMessage = @"!{0} crest <#> [Goes to crest #, valid #'s are 1-48] | !{0} submit left/right [Submits the currently shown crest on the left or right]";
+    #pragma warning restore 414
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        if (Regex.IsMatch(command, @"^\s*submit left\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            crestSelectors[0].OnInteract();
+            yield break;
+        }
+        if (Regex.IsMatch(command, @"^\s*submit right\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            crestSelectors[1].OnInteract();
+            yield break;
+        }
+        string[] parameters = command.Split(' ');
+        if (Regex.IsMatch(parameters[0], @"^\s*crest\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            if (parameters.Length == 2)
+            {
+                if (cmdIsValid(parameters[1]))
+                {
+                    yield return null;
+                    int temp = 0;
+                    int.TryParse(parameters[1], out temp);
+                    if(temp % 2 == 0)
+                    {
+                        temp = temp - 1;
+                    }
+                    if((currentCrest+1) < temp)
+                    {
+                        while((currentCrest+1) != temp) { pageTurners[1].OnInteract(); yield return new WaitForSeconds(0.1f); }
+                    }
+                    else if ((currentCrest + 1) > temp)
+                    {
+                        while ((currentCrest + 1) != temp) { pageTurners[0].OnInteract(); yield return new WaitForSeconds(0.1f); }
+                    }
+                    else
+                    {
+                        yield return "sendtochat I'm already showing this crest!";
+                    }
+                }
+            }
+            yield break;
+        }
+    }
 }
