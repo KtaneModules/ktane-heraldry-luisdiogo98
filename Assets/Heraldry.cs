@@ -479,10 +479,31 @@ public class Heraldry : MonoBehaviour
     }
 
     #pragma warning disable 414
-    private readonly string TwitchHelpMessage = @"!{0} crest <#> [Goes to crest #, valid #'s are 1-48] | !{0} submit left/right [Submits the currently shown crest on the left or right]";
+    private readonly string TwitchHelpMessage = @"!{0} cycle [Quickly cycles through all the crests] | !{0} crest <#> [Goes to crest #, valid #'s are 1-48] | !{0} submit left/right [Submits the currently shown crest on the left or right]";
     #pragma warning restore 414
     IEnumerator ProcessTwitchCommand(string command)
     {
+        if (Regex.IsMatch(command, @"^\s*cycle\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            yield return null;
+            while (currentCrest != 0)
+            {
+                pageTurners[0].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            while (currentCrest != 46)
+            {
+                pageTurners[1].OnInteract();
+                yield return new WaitForSeconds(1f);
+                yield return "trycancel The crest cycling has been halted due to a request to cancel";
+            }
+            while (currentCrest != 0)
+            {
+                pageTurners[0].OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            yield break;
+        }
         if (Regex.IsMatch(command, @"^\s*submit left\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
         {
             yield return null;
