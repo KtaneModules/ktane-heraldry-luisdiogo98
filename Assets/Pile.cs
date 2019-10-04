@@ -53,7 +53,7 @@ class Pile : Crest {
 
     public override int GetScore(KMBombInfo bomb)
     {
-        int divisionScore = 2 * 2 - 0 + 3;
+        int divisionScore = 3 * 2 - 0 + 3;
         
         bool foundGAV = false;
         bool foundPSC = false;
