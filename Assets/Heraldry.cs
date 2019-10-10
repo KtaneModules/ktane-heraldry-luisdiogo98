@@ -265,14 +265,14 @@ public class Heraldry : MonoBehaviour
 
 		if(selected == order[sol])
 		{
-			Debug.LogFormat("[Heraldry #{0}] Correctly selected crest #{1}. Module solved.", moduleId, order[sol]);
+			Debug.LogFormat("[Heraldry #{0}] Correctly selected crest #{1}. Module solved.", moduleId, order[sol] + 1);
 			moduleSolved = true;
 			Audio.PlaySoundAtTransform("trumpet", transform);
             GetComponent<KMBombModule>().HandlePass();
 		}
 		else
 		{
-			Debug.LogFormat("[Heraldry #{0}] Strike! Selected crest #{1} when crest #{2} was expected.", moduleId, selected, order[sol]);
+			Debug.LogFormat("[Heraldry #{0}] Strike! Selected crest #{1} when crest #{2} was expected.", moduleId, selected + 1, order[sol] + 1);
             GetComponent<KMBombModule>().HandleStrike();
 		}
 
