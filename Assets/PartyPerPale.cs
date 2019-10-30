@@ -70,7 +70,7 @@ class PartyPerPale : Crest {
 
     public override int GetScore(KMBombInfo bomb)
     {
-        int divisionScore = 2 * 2 - 1 + 3;
+        int divisionScore = 2 * 2 - 1 + 0;
         
         bool foundGAV = false;
         bool foundPSC = false;
